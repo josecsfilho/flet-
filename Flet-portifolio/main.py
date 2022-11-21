@@ -4,7 +4,7 @@
 # #475569 s-6
 
 
-"""" Flet Responsivel Portifolio - Website """
+"""" Flet Responsivo"""
 
 # modulos
 from flet import(
@@ -29,19 +29,34 @@ from flet import(
     transform,
 
 )
+import time
+import flet as ft
 
 def main(page: Page):
     # title
-    page.title = "Flet Portfolio"
+    page.title = "Flet"
 
     #
     def _animate_social(e):
         if e.data == "true":
             _icon_text_.offset, _icon_text_.opacity = transform.Offset(0, 0.05), 0
             _icon_text_.update()
+            for btn in _social_button.controls[:]:
+                btn.offset, btn.opacity = transform.Offset(0, 0.15), 100
+                btn.update()
+                time.sleep(0.1)
+        else:
+            for btn in _social_button.controls[:]:
+                btn.offset, btn.opacity = transform.Offset(0, -0.9), 0
+                btn.update()
+                time.sleep(0.1)
+            _icon_text_.offset, _icon_text_.opacity = transform.Offset(0, -1.1), 100
+            _icon_text_.update()
+            
+
     #
     def on_resize(e):
-        _background.control.height = page.height
+        
 
         if page.width <= 730:
             _nav.controls[0].visible = False
@@ -143,7 +158,7 @@ def main(page: Page):
                 padding=20, 
                 alignment=alignment.top_center,
                 content=Text(
-                    "Seja bem vindo a minha Webpage pessoal.", color="white",
+                    "Seja bem vindo", color="white",
                     text_align="center",
                     size=16,
                     weight="w500",
@@ -161,11 +176,11 @@ def main(page: Page):
     )
 
     _icon_text_ = Text(
-        "Connect!",
+        "Conecte!",
         size=16,
         color="white",
         weight="w800",
-        animate_opacity=500,
+        animate_opacity=50,
         offset=transform.Offset(0, -1.1),
         animate_offset=animation.Animation(duration=1000, curve="elasticOut"),
     )
@@ -177,7 +192,7 @@ def main(page: Page):
             icon_color="white",
             offset=transform.Offset(0, -0.9),
             animate_offset=animation.Animation(duration=1000, curve="elasticOut"),
-            animate_opacity=200,
+            animate_opacity=50,
             opacity=0,
         )
         _social_button.controls.append(_icon)
@@ -187,7 +202,7 @@ def main(page: Page):
         height=50, 
         bgcolor="blue800",
         border_radius=8, #
-        alignment=alignment.center,        
+        alignment=alignment.center,      
         on_hover=lambda e: _animate_social(e),
         content=Column(
             spacing=0, 
@@ -205,13 +220,46 @@ def main(page: Page):
         ),
     )
 
+    # portifolio grid responsivo
+    _items = ["ITEM ONE", "ITEM TWO", "ITEM THREE", "ITEM FOUR", "ITEM FIVE", "ITEM SIX"]
+    _item_row = ResponsiveRow(alignment="start", spacing=20)
+    _container_item = Container(
+        padding=20,
+        content=_item_row,
+    )
+
+    for item in _items:
+        _item_container = Container(
+            aspect_ratio=1,
+            bgcolor="white",
+            padding=35,
+            border_radius=12,
+            alignment=alignment.center,
+            col={"xs": 12, "sm": 4, "md": 4, "lg": 6, "xl": 4},
+            content=Container(
+                aspect_ratio=1,
+                border_radius=8,
+                #bgcolor="black",
+                alignment=alignment.center,
+                content=Text(
+                    f"{item}",
+                    size=21,
+                ),
+            ),
+        )
+        _item_row.controls.append(_item_container)
+
+
     # main column
-    _main_col = Column(horizontal_alignment="center")
+    _main_col = Column(horizontal_alignment="center", scroll="auto")
     _main_col.controls.append(_nav)
     _main_col.controls.append(_min_nav)
     _main_col.controls.append(_title)
-    _main_col.controls.append(_sub_title_)
+    _main_col.controls.append(_sub_title_)    
+    _main_col.controls.append(Container(padding=padding.only(top=10)))
     _main_col.controls.append(_icon_container)
+    _main_col.controls.append(Container(padding=padding.only(bottom=40)))
+    _main_col.controls.append(_container_item)
 
     # bg container
     _background = Container(
@@ -234,7 +282,7 @@ def main(page: Page):
     page.on_resize = on_resize
 
 if __name__ == "__main__":
-    flet.app(target=main)
+    flet.app(target=main, assets_dir="assets")
 
 
 
